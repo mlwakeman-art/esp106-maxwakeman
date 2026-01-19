@@ -1,0 +1,65 @@
+## This is the lab for week 2 
+## Add working R code in between the questions
+## The functions refer to the sections in https://rspatial.org/intr/
+
+## Functions
+
+## 1) Write a function 'f' that behaves like this:
+## > f('Jim')
+## [1] "hello Jim, how are you?"
+##HINT: you will need to use the paste() function within your new function
+
+```{r}
+f <- function(name) {
+  paste("hello", name, "how are you?")
+}
+f('Jim')
+f
+```
+## 2) Write a function 'sumOfSquares' that behaves like this:
+
+
+## > d <- c(1,5,2,4,6,2,4,5)
+## > sumOfSquares(d)
+## [1] 21.875
+```{r}
+sumOfSquares <- function(d) {
+  d <- c(1,5,2,4,6,2,4,5)
+  m <-sum(d)/length(d)
+  sub <-d-m
+  t <-sum(sub^2)
+  return(t)
+}
+d <- c(1,5,2,4,6,2,4,5)
+sumOfSquares(d)
+```
+
+# To compute the "sum of squares", subtract the mean value of all numbers from each number. 
+# Square these numbers and sum them
+# (bonus: make a variant that can handle NAs)
+
+
+## Flow Control
+
+## 4) Write a for loop that adds the numbers 1 to 10
+##HINT: you will need one variable that loops through the numbers 1 to 10 and one that keeps count through each loop
+```{r}
+x <- (1:10)
+y <- 0
+
+for (i in 1:length(x)) {
+  y<- y+x[i]
+  print(y)
+}
+
+y
+```
+## 5) Write a for loop that adds the odd numbers between 1 and 10 
+```{r}
+y<- 0
+x<- seq(from=1, to=9, by=2)
+for (i in x) {
+  y<- y +i
+}
+print(y)
+```
