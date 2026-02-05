@@ -1,0 +1,139 @@
+---
+output:
+  pdf_document: default
+  html_document: default
+---
+ ---
+title: "Lab 5"
+output: WAKEMANMAX
+---
+
+```{r setup, echo=FALSE}
+require("knitr")
+#opts_knit$set(root.dir = ) #use this to set your working directory so knitr understands it. By default the working directory is the same folder as where this Rmd document is saved on your computer
+```
+
+## Lab 5
+
+### Due Tuesday Feb4th - Recommended to complete this before starting the midterm
+
+This lab we will look at some data from the plastic trash piced up during clean-up events around the world. I took this dataset from the Tidy Tuesday website. You can read the documentation [here](https://github.com/rfordatascience/tidytuesday/blob/master/data/2021/2021-01-26/readme.md), including the references and description of the different column names.
+
+I have done some pre-processing of the data for you for this lab, to create two more easy-to-use dataframes.
+
+First read in the countrytotals.csv data frame
+```{r echo=FALSE}
+setwd("/Users/howlermonkeymax/Desktop/esp106")
+ctotal <- read.csv("countrytotals.csv")
+
+
+
+```
+
+Have a look at the data frame. Then column "total" gives the total number of pieces of plastic picked up in that country in 2020. The columns "num_events" and "volunteers" give the number of trash pick-up events and the number of volunteers in that country. We are going to use this to investigate where the plastic trash problem is worst.
+
+1. What 5 countries had the worst plastic problem as measured by the number of pieces of trash picked up?
+
+```{r question 1, echo=FALSE}
+
+#hint order(datacolumn, decreasing=TRUE) will give you the ranking of the countries by the values in the data column
+#you can use this to re-order the country data frame, ordering it from the country with the most trash picked up to the least
+
+#order(ctotal, decreasing=TRUE)
+
+ctotal_sorted <- ctotal[order(ctotal$total, decreasing = TRUE), ]
+
+top_5_countries <- head(ctotal_sorted, 5)
+
+top_5_countries[, c("country", "total")]
+
+```
+
+**Answer:** 
+
+2. Make a plot showing the distribution of volunteers across countries
+
+```{r question2, echo=FALSE}
+#plot(top_5_countries)
+
+hist(ctotal$volunteers, 
+     main = "Distribution of Volunteers across Countries",
+     xlab = "Number of Volunteers",
+     col = "skyblue",
+     border = "white")
+```
+
+3. Notice that there is a lot of variation across countries in the number of volunteers involved in trash pickup. What problem might that cause for the interpretation of your answer to question 1?
+
+**Answer:** 
+
+4. Add a column to the data frame creating a variable that should be more closely related to the presence of plastic pollution in the country
+
+```{r question4, echo=FALSE}
+
+
+
+ctotal$trash_per_volunteer <- ctotal$total / ctotal$volunteers
+head(ctotal)
+
+
+```
+
+5. What 5 countries have the worst plastic pollution, as measured by this new variable?
+
+```{r question5, echo=FALSE}
+
+ctotal_standardized <- ctotal[order(ctotal$trash_per_volunteer, decreasing = TRUE), ]
+
+
+top_5_standardized <- head(ctotal_standardized, 5)
+
+
+top_5_standardized[, c("country", "total", "volunteers", "trash_per_volunteer")]
+
+```
+
+**Answer:** 
+
+Now we will make a plot of the variation in the types of trash and how it differs around the world. Read in the continenttypes.csv data frame. This gives the breakdown of the different types of plastic collected on each continet in 2020 and the total number of pick up events.
+
+```{r q6, echo=FALSE}
+
+continent_data <- read.csv("/Users/howlermonkeymax/Desktop/ESP106/continenttypes.csv")
+
+continent_data$total_per_event <- continent_data$total / continent_data$events
+
+head(continent_data)
+
+```
+
+6. Add a column to this data frame with a variable that captures the existence of different types of plastic trash, controlling for the intensity of the pick-up effort in different continent
+
+```{r question6, echo=FALSE}
+names(continent_data)
+continent_data$total_per_event <- continent_data$total / continent_data$events
+head(continent_data)
+head(continent_data$total_per_event)
+```
+
+7. Make a plot using ggplot showing both the total amount and distribution of types of plastic picked up in each continent in the average pick-up event.
+
+Hint: Check out options in the [R graph gallery](https://www.r-graph-gallery.com)
+
+```{r question7, echo=FALSE}
+
+library(ggplot2)
+library(dplyr)
+library(tidyr) 
+
+
+ggplot(continent_data, aes(x = continent, y = total_per_event, fill = plastic_type)) +
+  geom_col() + 
+  theme_minimal() +
+  labs(title = "Plastic Types per Average Cleanup Event by Continent",
+       x = "Continent",
+       y = "Average Pieces of Plastic per Event",
+       fill = "Plastic Type") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+```
